@@ -1,0 +1,35 @@
+defaults:
+  pulse:
+    credentials:
+      username: !env PULSE_USERNAME
+      password: !env PULSE_PASSWORD
+    prefetch:   20
+    queueName:  null
+  taskcluster:
+    credentials:
+      clientId: !env TASKCLUSTER_CLIENT_ID
+      accessToken: !env TASKCLUSTER_ACCESS_TOKEN
+  postgresql:
+    username: !env POSTGRESQL_USERNAME
+    password: !env POSTGRESQL_PASSWORD
+production:
+  pulse:
+    queueName: taskcluster-task-analysis
+  monitor:
+    component: 'task-analysis'
+staging:
+  pulse:
+    queueName: taskcluster-task-analysis
+  monitor:
+    component: 'task-analysis-staging'
+test:
+  postgresql:
+    host: localhost
+    port: 5555
+    user: postgres
+    password: seekrit
+    database: postgres
+    max: 10
+    idleTimeoutMillis: 1000
+  monitor:
+    component: 'task-analysis-test'

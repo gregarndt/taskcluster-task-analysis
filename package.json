@@ -1,0 +1,31 @@
+{
+  "name": "taskcluster-task-analysis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.bundle.js",
+  "dependencies": {
+    "debug": "^2.3.3",
+    "lodash": "^4.17.2",
+    "neutrino": "^3.0.0",
+    "neutrino-preset-taskcluster": "^2.0.0",
+    "pg": "^6.1.0",
+    "taskcluster-client": "^1.6.1",
+    "taskcluster-lib-loader": "^1.1.0",
+    "taskcluster-lib-monitor": "^4.3.3",
+    "typed-env-config": "^1.1.0"
+  },
+  "devDependencies": {
+    "neutrino": "^3.0.0",
+    "neutrino-preset-taskcluster": "^2.0.0"
+  },
+  "config": {
+    "preset": "neutrino-preset-taskcluster"
+  },
+  "scripts": {
+    "build": "neutrino build",
+    "test": "neutrino test",
+    "start": "yarn build && node ."
+  },
+  "author": "",
+  "license": "ISC"
+}
