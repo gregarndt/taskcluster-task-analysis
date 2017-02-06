@@ -10,8 +10,7 @@ defaults:
       clientId: !env TASKCLUSTER_CLIENT_ID
       accessToken: !env TASKCLUSTER_ACCESS_TOKEN
   postgresql:
-    username: !env POSTGRESQL_USERNAME
-    password: !env POSTGRESQL_PASSWORD
+    connectionString: !env DATABASE_URL
 production:
   pulse:
     queueName: taskcluster-task-analysis
