@@ -162,7 +162,7 @@ export class Handler {
   async handleTaskException(task) {
     let start = new Date(task.currentRun.scheduled);
     if (task.currentRun.started) {
-      start = task.currentRun.started;
+      start = new Date(task.currentRun.started);
     }
 
     await this.db.query(
