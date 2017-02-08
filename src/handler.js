@@ -160,6 +160,11 @@ export class Handler {
   }
 
   async handleTaskException(task) {
+    let start = new Date(task.currentRun.scheduled);
+    if (task.currentRun.started) {
+      start = task.currentRun.started;
+    }
+
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
@@ -189,7 +194,7 @@ export class Handler {
         task.currentRun.started,
         task.currentRun.resolved,
         task.currentRun.reasonResolved,
-        new Date(task.currentRun.resolved) - new Date(task.currentRun.started),
+        new Date(task.currentRun.resolved) - start,
       ]
     );
     return;
