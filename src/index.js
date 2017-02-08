@@ -40,7 +40,6 @@ let load = loader({
   db: {
     requires: ['cfg'],
     setup: ({cfg}) => {
-      console.log(cfg.postgresql);
       return new pg.Client(cfg.postgresql);
     },
   },
