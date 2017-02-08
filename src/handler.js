@@ -35,7 +35,9 @@ export class Handler {
       console.log(`Error encountered with pulse listener. ${error.stack}`);
       process.exit();
     });
+    debug('starting listener');
     await this.listener.resume();
+    debug('started listener');
     debug('Handler Started');
   }
 
