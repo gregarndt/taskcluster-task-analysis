@@ -45,7 +45,7 @@ let load = loader({
         debug('Runnign in production, forcing SSL for postgres');
         pg.defaults.ssl = true;
       }
-      let client = pg.Client(cfg.postgresql);
+      let client = new pg.Client(cfg.postgresql);
       await client.connect();
       return client;
     },
