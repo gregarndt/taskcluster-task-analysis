@@ -68,9 +68,9 @@ export class Handler {
   async handleTaskPending(task) {
     await this.db.query(
       'INSERT INTO tasks' +
-      ' (task_id, run_id, state, created, source, owner, project,' +
+      ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
       ' revision, push_id, scheduler, worker_type, platform, job_kind)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)' +
       // In case a duplicate pending message is received, ignore the message and
       // do nothing
       ' ON CONFLICT DO NOTHING',
@@ -79,6 +79,7 @@ export class Handler {
         task.runId,
         task.currentRun.state,
         task.taskStatus.created,
+        task.currentRun.scheduled,
         task.source.origin,
         task.source.owner,
         task.source.project,
