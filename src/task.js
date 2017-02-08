@@ -61,14 +61,13 @@ export class Task {
       return;
     }
 
-    let label = '';
+    let labels = [];
     if (this.taskStatus.extra.treeherder.collection) {
-      let label = 'debug';
-      if (this.taskStatus.extra.treeherder.collection.opt) {
-        label = 'opt';
+      for (let key of Object.keys(this.taskStatus.extra.treeherder.collection)) {
+        if (this.taskStatus.extra.treeherder.collection[key]) {
+          labels.push(key);
+        }
       }
-    } else {
-      debug('task does not have a treeherder.collection', this.taskStatus.extra.treeherder);
     }
 
     let platform = 'unknown';
@@ -77,10 +76,10 @@ export class Task {
       platform = this.taskStatus.extra.treeherder.machine.platform;
     }
 
-    if (label) {
-      return this.taskStatus.extra.treeherder.machine.platform + ' ' + label;
+    if (labels.length) {
+      return platform + ' ' + labels.sort().join(' ');
     } else {
-      return this.taskStatus.extra.treeherder.machine.platform;
+      return platform;
     }
   }
 }
