@@ -40,7 +40,7 @@ let load = loader({
 
   db: {
     requires: ['cfg'],
-    setup: ({cfg}) => {
+    setup: async ({cfg}) => {
       if (process.env.NODE_ENV === 'production') {
         debug('Runnign in production, forcing SSL for postgres');
         pg.defaults.ssl = true;
