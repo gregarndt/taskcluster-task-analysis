@@ -161,7 +161,7 @@ export class Handler {
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
       ' revision, push_id, scheduler, worker_type, platform, job_kind,' +
-      ' worker_id, started, resolved, exception_reason)' +
+      ' worker_id, started, resolved, exception_reason, duration)' +
       ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
