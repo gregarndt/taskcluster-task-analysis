@@ -4,15 +4,13 @@ defaults:
       username: !env PULSE_USERNAME
       password: !env PULSE_PASSWORD
     prefetch:   20
-    queueName:  null
+    queueName:  'taskcluster-task-analysis'
   taskcluster:
     credentials:
       clientId: !env TASKCLUSTER_CLIENT_ID
       accessToken: !env TASKCLUSTER_ACCESS_TOKEN
   postgresql: !env DATABASE_URL
 production:
-  pulse:
-    queueName: taskcluster-task-analysis
   monitor:
     component: 'task-analysis'
 staging:
