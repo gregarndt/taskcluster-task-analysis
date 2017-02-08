@@ -15,6 +15,7 @@ CREATE TABLE tasks (
     revision text,
     push_id int,
     scheduler text,
+    provisioner text,
     worker_id text,
     worker_type text,
     platform text,

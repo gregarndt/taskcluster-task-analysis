@@ -69,8 +69,8 @@ export class Handler {
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
-      ' revision, push_id, scheduler, worker_type, platform, job_kind)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)' +
+      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)' +
       // In case a duplicate pending message is received, ignore the message and
       // do nothing
       ' ON CONFLICT DO NOTHING',
@@ -86,6 +86,7 @@ export class Handler {
         task.source.revision,
         task.source.pushId,
         task.taskStatus.schedulerId,
+        task.taskStatus.provisionerId,
         task.taskStatus.workerType,
         task.platform,
         task.jobKind,
@@ -99,8 +100,8 @@ export class Handler {
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project, ' +
-      ' revision, push_id, scheduler, worker_type, platform, job_kind, worker_id, started)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)' +
+      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind, worker_id, started)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, started=EXCLUDED.started, worker_id=EXCLUDED.worker_id',
       [
@@ -115,6 +116,7 @@ export class Handler {
         task.source.revision,
         task.source.pushId,
         task.taskStatus.schedulerId,
+        task.taskStatus.provisionerId,
         task.taskStatus.workerType,
         task.platform,
         task.jobKind,
@@ -130,8 +132,8 @@ export class Handler {
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
-      ' revision, push_id, scheduler, worker_type, platform, job_kind, worker_id, started, resolved, duration)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)' +
+      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind, worker_id, started, resolved, duration)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, ' +
       ' worker_id=EXCLUDED.worker_id, started=EXCLUDED.started, resolved=EXCLUDED.resolved',
@@ -147,6 +149,7 @@ export class Handler {
         task.source.revision,
         task.source.pushId,
         task.taskStatus.schedulerId,
+        task.taskStatus.provisionerId,
         task.taskStatus.workerType,
         task.platform,
         task.jobKind,
@@ -169,9 +172,9 @@ export class Handler {
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
-      ' revision, push_id, scheduler, worker_type, platform, job_kind,' +
+      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind,' +
       ' worker_id, started, resolved, exception_reason, duration)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
       ' scheduled=EXCLUDED.scheduled, started=EXCLUDED.started, ' +
@@ -188,6 +191,7 @@ export class Handler {
         task.source.revision,
         task.source.pushId,
         task.taskStatus.schedulerId,
+        task.taskStatus.provisionerId,
         task.taskStatus.workerType,
         task.platform,
         task.jobKind,
