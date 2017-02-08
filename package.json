@@ -24,7 +24,8 @@
   "scripts": {
     "build": "neutrino build",
     "test": "neutrino test",
-    "start": "yarn build && node . server"
+    "postinstall": "yarn build",
+    "start": "node . server"
   },
   "author": "",
   "license": "ISC"
