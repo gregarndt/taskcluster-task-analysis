@@ -22,3 +22,9 @@ CREATE TABLE tasks (
     job_kind text,
     CONSTRAINT dup_task_run UNIQUE (task_id, run_id)
 );
+
+create TABLE cost_per_workertype (
+    workertype text,
+    cost money,
+    CONSTRAINT unique_workertype UNIQUE (workertype)
+);
