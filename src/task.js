@@ -1,4 +1,7 @@
+import Debug from 'debug';
 import parseRoute from './util/route_parser';
+
+let debug = Debug('taskcluster-analysis:task');
 
 // Filters the task routes for the treeherder specific route.  Once found,
 // the route is parsed into distinct parts used for constructing the
@@ -51,12 +54,22 @@ export class Task {
 
   get platform() {
     if (this.taskStatus.extra) {
+      let label = '';
       if (this.taskStatus.extra.treeherder) {
-        let label = 'debug';
-        if (this.taskStatus.extra.treeherder.collection.opt) {
-          label = 'opt';
+        if (this.taskStatus.extra.treeherder.collection) {
+          let label = 'debug';
+          if (this.taskStatus.extra.treeherder.collection.opt) {
+            label = 'opt';
+          }
+        } else {
+          debug('task does not have a treeherder.collection', this.taskStatus.extra.treeherder);
         }
-        return this.taskStatus.extra.treeherder.machine.platform + ' ' + label;
+
+        if (label) {
+          return this.taskStatus.extra.treeherder.machine.platform + ' ' + label;
+        } else {
+          return this.taskStatus.extra.treeherder.machine.platform;
+        }
       }
     }
   }
