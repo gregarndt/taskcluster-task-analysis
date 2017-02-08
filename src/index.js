@@ -23,6 +23,7 @@ let load = loader({
         credentials: cfg.pulse.credentials,
         queueName: cfg.pulse.queueName,
         prefetch: cfg.pulse.prefetch,
+        hostname: cfg.pulse.hostname,
       });
 
       await Promise.all([

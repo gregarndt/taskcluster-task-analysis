@@ -5,6 +5,7 @@ defaults:
       password: !env PULSE_PASSWORD
     prefetch:   20
     queueName:  'taskcluster-task-analysis'
+    hostname: 'pulse.mozilla.org'
   taskcluster:
     credentials:
       clientId: !env TASKCLUSTER_CLIENT_ID
