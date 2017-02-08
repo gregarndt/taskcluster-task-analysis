@@ -28,7 +28,7 @@ export class Handler {
       try {
         await this.handleMessage(message);
       } catch (err) {
-        console.log(`Error caught when processing message. ${err.message}. ${err.stack}`);
+        console.log(`Error caught when processing message. Message: ${message} Stack: ${err.stack}`);
       };
     });
     this.listener.on('error', (error) => {
