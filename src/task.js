@@ -52,7 +52,6 @@ export class Task {
   get platform() {
     if (this.taskStatus.extra) {
       if (this.taskStatus.extra.treeherder) {
-        console.log(this.taskStatus.extra.treeherder.collection);
         let label = 'debug';
         if (this.taskStatus.extra.treeherder.collection.opt) {
           label = 'opt';

@@ -35,10 +35,8 @@ export class Handler {
       console.log(`Error encountered with pulse listener. ${error.stack}`);
       process.exit();
     });
-    debug('starting listener');
     await this.listener.resume();
-    debug('started listener');
-    debug('Handler Started');
+    debug('Started Handler');
   }
 
   async handleMessage(message) {
@@ -65,8 +63,6 @@ export class Handler {
   }
 
   async handleTaskPending(task) {
-
-    debug('current run', task.currentRun);
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, source, owner, project,' +
