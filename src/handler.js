@@ -69,8 +69,8 @@ export class Handler {
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, source, owner, project,' +
-      ' revision, push_id, scheduler, worker_type)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)' +
+      ' revision, push_id, scheduler, worker_type, platform, job_kind)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)' +
       // In case a duplicate pending message is received, ignore the message and
       // do nothing
       ' ON CONFLICT DO NOTHING',
@@ -86,6 +86,8 @@ export class Handler {
         task.source.pushId,
         task.taskStatus.schedulerId,
         task.taskStatus.workerType,
+        task.platform,
+        task.jobKind,
       ]
     );
 
@@ -93,28 +95,13 @@ export class Handler {
   }
 
   async handleTaskRunning(task) {
-    /*
-    debug('taskid', task.taskId);
-    debug('ruId', task.runId);
-    debug('repo source', task.source.origin);
-    debug('owner', task.source.owner);
-    debug('project', task.source.project);
-    debug('revision', task.source.revision);
-
-    debug('pushId', task.source.pushId);
-    debug('task state', task.currentRun.state);
-    debug('time created', task.taskStatus.created);
-    */
-    debug('current run', task.currentRun);
-
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project, ' +
-      ' revision, push_id, scheduler, worker_type, worker_id, started)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)' +
+      ' revision, push_id, scheduler, worker_type, platform, job_kind, worker_id, started)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
-      ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, ' +
-      ' started=EXCLUDED.started, worker_id=EXCLUDED.worker_id',
+      ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, started=EXCLUDED.started, worker_id=EXCLUDED.worker_id',
       [
         task.taskId,
         task.runId,
@@ -128,6 +115,8 @@ export class Handler {
         task.source.pushId,
         task.taskStatus.schedulerId,
         task.taskStatus.workerType,
+        task.platform,
+        task.jobKind,
         task.currentRun.workerId,
         task.currentRun.started,
       ]
@@ -137,13 +126,11 @@ export class Handler {
   }
 
   async handleTaskCompleted(task) {
-
-    debug('current run', task.currentRun);
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
-      ' revision, push_id, scheduler, worker_type, worker_id, started, resolved)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)' +
+      ' revision, push_id, scheduler, worker_type, platform, job_kind, worker_id, started, resolved, duration)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, ' +
       ' worker_id=EXCLUDED.worker_id, started=EXCLUDED.started, resolved=EXCLUDED.resolved',
@@ -160,9 +147,12 @@ export class Handler {
         task.source.pushId,
         task.taskStatus.schedulerId,
         task.taskStatus.workerType,
+        task.platform,
+        task.jobKind,
         task.currentRun.workerId,
         task.currentRun.started,
         task.currentRun.resolved,
+        new Date(task.currentRun.resolved) - new Date(task.currentRun.started),
       ]
     );
 
@@ -170,13 +160,12 @@ export class Handler {
   }
 
   async handleTaskException(task) {
-
-    debug('current run', task.currentRun);
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
-      ' revision, push_id, scheduler, worker_type, worker_id, started, resolved, exception_reason)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)' +
+      ' revision, push_id, scheduler, worker_type, platform, job_kind,' +
+      ' worker_id, started, resolved, exception_reason)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
       ' scheduled=EXCLUDED.scheduled, started=EXCLUDED.started, ' +
@@ -194,10 +183,13 @@ export class Handler {
         task.source.pushId,
         task.taskStatus.schedulerId,
         task.taskStatus.workerType,
+        task.platform,
+        task.jobKind,
         task.currentRun.workerId,
         task.currentRun.started,
         task.currentRun.resolved,
         task.currentRun.reasonResolved,
+        new Date(task.currentRun.resolved) - new Date(task.currentRun.started),
       ]
     );
     return;

@@ -38,4 +38,27 @@ export class Task {
     this.source = parseRouteInfo(this);
     return;
   }
+
+  get jobKind() {
+    if (this.taskStatus.extra) {
+      if (this.taskStatus.extra.treeherder) {
+        return this.taskStatus.extra.treeherder.jobKind;
+      }
+    }
+
+    return;
+  }
+
+  get platform() {
+    if (this.taskStatus.extra) {
+      if (this.taskStatus.extra.treeherder) {
+        console.log(this.taskStatus.extra.treeherder.collection);
+        let label = 'debug';
+        if (this.taskStatus.extra.treeherder.collection.opt) {
+          label = 'opt';
+        }
+        return this.taskStatus.extra.treeherder.machine.platform + ' ' + label;
+      }
+    }
+  }
 }

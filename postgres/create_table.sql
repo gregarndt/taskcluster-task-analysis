@@ -8,6 +8,7 @@ CREATE TABLE tasks (
     scheduled timestamp,
     started timestamp,
     resolved timestamp,
+    duration int,
     source text,
     owner text,
     project text,
@@ -16,5 +17,7 @@ CREATE TABLE tasks (
     scheduler text,
     worker_id text,
     worker_type text,
+    platform text,
+    job_kind text,
     CONSTRAINT dup_task_run UNIQUE (task_id, run_id)
 );
