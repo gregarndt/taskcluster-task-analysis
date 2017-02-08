@@ -28,7 +28,10 @@ export class Handler {
       try {
         await this.handleMessage(message);
       } catch (err) {
-        console.log(`Error caught when processing message. Message: ${JSON.stringify(message, null, 2)} Stack: ${err.stack}`);
+        console.log(
+          `Error caught when processing message. ` +
+          `Message: ${JSON.stringify(message, null, 2)} Stack: ${err.stack}`
+        );
       };
     });
     this.listener.on('error', (error) => {

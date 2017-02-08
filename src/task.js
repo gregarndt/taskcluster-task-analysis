@@ -53,24 +53,34 @@ export class Task {
   }
 
   get platform() {
-    if (this.taskStatus.extra) {
-      let label = '';
-      if (this.taskStatus.extra.treeherder) {
-        if (this.taskStatus.extra.treeherder.collection) {
-          let label = 'debug';
-          if (this.taskStatus.extra.treeherder.collection.opt) {
-            label = 'opt';
-          }
-        } else {
-          debug('task does not have a treeherder.collection', this.taskStatus.extra.treeherder);
-        }
+    if (!this.taskStatus.extra) {
+      return;
+    }
 
-        if (label) {
-          return this.taskStatus.extra.treeherder.machine.platform + ' ' + label;
-        } else {
-          return this.taskStatus.extra.treeherder.machine.platform;
-        }
+    if (!this.taskStatus.extra.treeherder) {
+      return;
+    }
+
+    let label = '';
+    if (this.taskStatus.extra.treeherder.collection) {
+      let label = 'debug';
+      if (this.taskStatus.extra.treeherder.collection.opt) {
+        label = 'opt';
       }
+    } else {
+      debug('task does not have a treeherder.collection', this.taskStatus.extra.treeherder);
+    }
+
+    let platform = 'unknown';
+    if (this.taskStatus.extra.treeherder.machine &&
+        this.taskStatus.extra.treeherder.machine.platform) {
+      platform = this.taskStatus.extra.treeherder.machine.platform;
+    }
+
+    if (label) {
+      return this.taskStatus.extra.treeherder.machine.platform + ' ' + label;
+    } else {
+      return this.taskStatus.extra.treeherder.machine.platform;
     }
   }
 }
