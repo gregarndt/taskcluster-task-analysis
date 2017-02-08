@@ -18,7 +18,6 @@ export class Handler {
   constructor(options) {
     this.queue = options.queue;
     this.listener = options.listener;
-    this.monitor = options.monitor;
     this.db = options.db;
   }
 

@@ -1,7 +1,6 @@
 import Debug from 'debug';
 import path from 'path';
 import pg from 'pg';
-import monitor from 'taskcluster-lib-monitor';
 import config from 'typed-env-config';
 import loader from 'taskcluster-lib-loader';
 import taskcluster from 'taskcluster-client';
@@ -13,16 +12,6 @@ let load = loader({
   cfg: {
     requires: ['profile'],
     setup: ({profile}) => config({profile}),
-  },
-
-  monitor: {
-    requires: ['process', 'profile', 'cfg'],
-    setup: ({process, profile, cfg}) => monitor({
-      project: cfg.monitor.component,
-      credentials: cfg.taskcluster.credentials,
-      mock: profile === 'test',
-      process,
-    }),
   },
 
   listener: {
@@ -57,14 +46,13 @@ let load = loader({
   },
 
   server: {
-    requires: ['cfg', 'monitor', 'listener', 'db'],
-    setup: async ({cfg, monitor, listener, db}) => {
+    requires: ['cfg', 'listener', 'db'],
+    setup: async ({cfg, listener, db}) => {
       let queue = new taskcluster.Queue();
 
       let handler = new Handler({
         queue,
         listener,
-        monitor,
         db,
       });
       handler.start();
