@@ -41,7 +41,7 @@ let load = loader({
     requires: ['cfg'],
     setup: ({cfg}) => {
       console.log(cfg.postgresql);
-      return new pg.Pool(cfg.postgresql);
+      return new pg.Pool(cfg.postgresql.connectionString);
     },
   },
 
