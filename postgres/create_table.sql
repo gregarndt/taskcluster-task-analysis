@@ -28,3 +28,22 @@ create TABLE cost_per_workertype (
     cost money,
     CONSTRAINT unique_workertype UNIQUE (workertype)
 );
+
+create TABLE cached_task_definitions (
+    timestamp timestamp NOT NULL DEFAULT NOW(),
+    task_id varchar(22) NOT NULL,
+    definition JSON NOT NULL
+);
+
+CREATE FUNCTION expire_old_task_definitions() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  DELETE FROM cached_task_definitions WHERE timestamp < NOW() - INTERVAL '3 hours';
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER expire_delete_task_definitions_trigger
+    AFTER INSERT ON cached_task_definitions
+    EXECUTE PROCEDURE expire_old_task_definitions();
