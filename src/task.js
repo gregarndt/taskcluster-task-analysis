@@ -1,7 +1,39 @@
 import Debug from 'debug';
 import parseRoute from './util/route_parser';
+import parseGithubUrl from 'parse-github-url';
 
 let debug = Debug('taskcluster-analysis:task');
+
+const DEFAULT_SOURCE = {
+  origin: undefined,
+  owner: undefined,
+  project: undefined,
+  revision: undefined,
+  pushId: undefined,
+};
+
+function determineSourceInformation(task) {
+  if (task.taskStatus.schedulerId === 'taskcluster-github') {
+    return buildGithubSourceInformation(task.taskStatus.payload);
+  }
+
+  return parseRouteInfo(task);
+}
+
+function buildGithubSourceInformation(task) {
+  try {
+    let parsedUrl = parseGithubUrl(task.env.GITHUB_HEAD_REPO_URL);
+    return {
+      origin: 'github.com',
+      owner: parsedUrl.owner,
+      project: parsedUrl.name,
+      revision: task.env.GITHUB_HEAD_SHA,
+    };
+  } catch (e) {
+    debug('Unable to part task for github information');
+    return DEFAULT_SOURCE;
+  }
+}
 
 // Filters the task routes for the treeherder specific route.  Once found,
 // the route is parsed into distinct parts used for constructing the
@@ -12,13 +44,7 @@ function parseRouteInfo(task) {
   });
 
   if (matchingRoutes.length != 1) {
-    return {
-      origin: undefined,
-      owner: undefined,
-      project: undefined,
-      revision: undefined,
-      pushId: undefined,
-    };
+    return DEFAULT_SOURCE;
   }
 
   let parsedRoute = parseRoute(matchingRoutes[0]);
@@ -38,7 +64,7 @@ export class Task {
     this.runId = pulseMessage.payload.runId;
     this.message = pulseMessage;
     this.currentRun = pulseMessage.payload.status.runs[this.runId];
-    this.source = parseRouteInfo(this);
+    this.source = determineSourceInformation(this);
     return;
   }
 

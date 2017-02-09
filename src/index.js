@@ -18,7 +18,7 @@ let load = loader({
     requires: ['cfg'],
     setup: async ({cfg}) => {
       let queueEvents = new taskcluster.QueueEvents();
-      let routingPattern = `route.#`;
+      let routingPattern = `#`;
       let listener = new taskcluster.PulseListener({
         credentials: cfg.pulse.credentials,
         queueName: cfg.pulse.queueName,

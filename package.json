@@ -8,6 +8,7 @@
     "lodash": "^4.17.2",
     "neutrino": "^3.0.0",
     "neutrino-preset-taskcluster": "^2.0.0",
+    "parse-github-url": "^1.0.0",
     "pg": "^6.1.0",
     "taskcluster-client": "^1.6.3",
     "taskcluster-lib-loader": "^1.1.0",
