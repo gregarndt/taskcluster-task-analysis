@@ -1,4 +1,5 @@
 CREATE TABLE tasks (
+    modified timestamp NOT NULL DEFAULT NOW(),
     task_id varchar(22) NOT NULL,
     run_id int NOT NULL,
     state text NOT NULL,
@@ -22,6 +23,16 @@ CREATE TABLE tasks (
     job_kind text,
     CONSTRAINT dup_task_run UNIQUE (task_id, run_id)
 );
+
+CREATE OR REPLACE FUNCTION update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.modified = now();
+    RETURN NEW;	
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_modtime BEFORE UPDATE ON tasks FOR EACH ROW EXECUTE PROCEDURE  update_modified_column();
 
 create TABLE cost_per_workertype (
     workertype text,
