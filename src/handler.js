@@ -161,7 +161,7 @@ export class Handler {
       ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, ' +
-      ' worker_id=EXCLUDED.worker_id, started=EXCLUDED.started, resolved=EXCLUDED.resolved' +
+      ' worker_id=EXCLUDED.worker_id, started=EXCLUDED.started, resolved=EXCLUDED.resolved, ' +
       ' duration=EXCLUDED.duration',
       [
         task.taskId,
@@ -204,7 +204,7 @@ export class Handler {
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
       ' scheduled=EXCLUDED.scheduled, started=EXCLUDED.started, ' +
-      ' resolved=EXCLUDED.resolved, exception_reason=EXCLUDED.exception_reason' +
+      ' resolved=EXCLUDED.resolved, exception_reason=EXCLUDED.exception_reason, ' +
       ' duration=EXCLUDED.duration',
       [
         task.taskId,
