@@ -2,7 +2,7 @@ import Debug from 'debug';
 import parseRoute from './util/route_parser';
 import parseGithubUrl from 'parse-github-url';
 
-let debug = Debug('taskcluster-analysis:task');
+let debug = Debug('task-analysis:task');
 
 const DEFAULT_SOURCE = {
   origin: undefined,
@@ -12,7 +12,15 @@ const DEFAULT_SOURCE = {
   pushId: undefined,
 };
 
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
 function determineSourceInformation(task) {
+  if (isEmpty(task.taskStatus)) {
+    return DEFAULT_SOURCE;
+  }
+
   if (task.taskStatus.schedulerId === 'taskcluster-github') {
     return buildGithubSourceInformation(task.taskStatus.payload);
   }
@@ -57,9 +65,9 @@ function parseRouteInfo(task) {
 }
 
 export class Task {
-  constructor(taskStatus, pulseMessage) {
+  constructor(pulseMessage, taskStatus) {
     this.taskStatus = taskStatus;
-    this.routes = taskStatus.routes;
+    this.routes = pulseMessage.routes || [];
     this.taskId = pulseMessage.payload.status.taskId;
     this.runId = pulseMessage.payload.runId;
     this.message = pulseMessage;
@@ -69,10 +77,8 @@ export class Task {
   }
 
   get jobKind() {
-    if (this.taskStatus.extra) {
-      if (this.taskStatus.extra.treeherder) {
-        return this.taskStatus.extra.treeherder.jobKind;
-      }
+    if (this.taskStatus.extra && this.taskStatus.extra.treeherder) {
+      return this.taskStatus.extra.treeherder.jobKind;
     }
 
     return;
