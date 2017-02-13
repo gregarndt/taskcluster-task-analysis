@@ -90,6 +90,13 @@ export class Handler {
   }
 
   async handleTaskPending(task) {
+    // Task runs that were created due to automatic rerun (such as some task-exceptions)
+    // should have the previous run resolved properly.  Task exception events are
+    // not published when a task is rerun.
+    if (task.runId > 0 && task.currentRun.reasonCreated === 'retry') {
+      await this.handleTaskRetry(task);
+    }
+
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
@@ -114,6 +121,52 @@ export class Handler {
         task.taskStatus.workerType,
         task.platform,
         task.jobKind,
+      ]
+    );
+
+    return;
+  }
+
+  async handleTaskRetry(task) {
+    let runId = task.runId-1;
+    let currentRun = task.runs[runId];
+    let start = new Date(currentRun.scheduled);
+    if (currentRun.started) {
+      start = new Date(currentRun.started);
+    }
+
+    await this.db.query(
+      'INSERT INTO tasks' +
+      ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
+      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind,' +
+      ' worker_id, started, resolved, exception_reason, duration)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)' +
+      ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
+      ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
+      ' scheduled=EXCLUDED.scheduled, started=EXCLUDED.started, ' +
+      ' resolved=EXCLUDED.resolved, exception_reason=EXCLUDED.exception_reason, ' +
+      ' duration=EXCLUDED.duration',
+      [
+        task.taskId,
+        runId,
+        currentRun.state,
+        task.taskStatus.created,
+        currentRun.scheduled,
+        task.source.origin,
+        task.source.owner,
+        task.source.project,
+        task.source.revision,
+        task.source.pushId,
+        task.taskStatus.schedulerId,
+        task.taskStatus.provisionerId,
+        task.taskStatus.workerType,
+        task.platform,
+        task.jobKind,
+        currentRun.workerId,
+        currentRun.started,
+        currentRun.resolved,
+        currentRun.reasonResolved,
+        new Date(currentRun.resolved) - start,
       ]
     );
 
