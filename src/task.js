@@ -72,6 +72,7 @@ export class Task {
     this.runId = pulseMessage.payload.runId;
     this.message = pulseMessage;
     this.currentRun = pulseMessage.payload.status.runs[this.runId];
+    this.runs = pulseMessage.payload.status.runs;
     this.source = determineSourceInformation(this);
     return;
   }
