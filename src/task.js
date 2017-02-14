@@ -30,12 +30,13 @@ function determineSourceInformation(task) {
 
 function buildGithubSourceInformation(task) {
   try {
-    let parsedUrl = parseGithubUrl(task.env.GITHUB_HEAD_REPO_URL);
+    let parsedUrl = parseGithubUrl(task.env.GITHUB_BASE_REPO_URL);
     return {
       origin: 'github.com',
       owner: parsedUrl.owner,
       project: parsedUrl.name,
       revision: task.env.GITHUB_HEAD_SHA,
+      push_id: task.env.GITHUB_PULL_REQUEST,
     };
   } catch (e) {
     debug('Unable to part task for github information');
