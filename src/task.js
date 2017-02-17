@@ -1,8 +1,5 @@
-import Debug from 'debug';
 import parseRoute from './util/route_parser';
 import parseGithubUrl from 'parse-github-url';
-
-let debug = Debug('task-analysis:task');
 
 const DEFAULT_SOURCE = {
   origin: undefined,

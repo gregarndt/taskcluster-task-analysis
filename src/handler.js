@@ -49,13 +49,10 @@ export class Handler {
     );
 
     if (res.rowCount === 1) {
-      debug(`retrieved definition from db for ${taskId}`);
       return res.rows[0].definition;
     }
 
     let def = await this.queue.task(taskId);
-    debug(`retrieved defintion from queue for ${taskId}`);
-    //debug('task definition', JSON.stringify(def));
     await this.db.query(
       'INSERT INTO cached_task_definitions (task_id, definition)' +
       ' VALUES ($1, $2)',
@@ -67,7 +64,7 @@ export class Handler {
   async handleMessage(message) {
     let taskId = message.payload.status.taskId;
 
-    debug(`message received for task ${taskId}`);
+    debug(`message received for task ${taskId} with state ${EVENT_MAP[message.exchange]}`);
 
     let taskDef = await this.getTaskDefinition(taskId);
 
