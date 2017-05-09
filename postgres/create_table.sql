@@ -24,6 +24,11 @@ CREATE TABLE tasks (
     CONSTRAINT dup_task_run UNIQUE (task_id, run_id)
 );
 
+create index tasks_worker_id_idx on tasks (worker_id);
+create index tasks_task_id_idx on tasks (task_id);
+create index tasks_project_idx on tasks (project);
+create index tasks_revision_idx on tasks (revision);
+
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -45,6 +50,8 @@ create TABLE cached_task_definitions (
     task_id varchar(22) NOT NULL,
     definition JSON NOT NULL
 );
+
+create index cached_task_id_for_definition on cached_task_definitions (task_id)
 
 CREATE FUNCTION expire_old_task_definitions() RETURNS trigger
     LANGUAGE plpgsql
