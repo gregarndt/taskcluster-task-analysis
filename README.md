@@ -40,7 +40,7 @@ yarn
 
 #### Running application locally
 
-NODE_ENV=<profile> PULSE_USERNAME=<username> PULSE_PASSWORD=<password> node . server
+NODE_ENV=\<profile\> PULSE_USERNAME=\<username\> PULSE_PASSWORD=\<password\> node . server
 
 For instance, to run the test configuratino for this application, run:
 
