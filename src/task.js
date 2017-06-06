@@ -27,7 +27,7 @@ function determineSourceInformation(task) {
 
 function buildGithubSourceInformation(task) {
   let source = task.metadata.source;
-  if (task.payload.env.GITHUB_BASE_REPO_URL) {
+  if (task.payload.env && task.payload.env.GITHUB_BASE_REPO_URL) {
     source = task.payload.env.GITHUB_BASE_REPO_URL;
   }
 
