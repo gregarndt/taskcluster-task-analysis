@@ -18,7 +18,7 @@ production:
     publicUrl: !env APPLICATION_URL
     port: !env:number PORT
     forceSSL: true
-    env: 'development'
+    env: 'production'
 staging:
   pulse:
     queueName: taskcluster-task-analysis
