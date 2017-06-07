@@ -1,0 +1,27 @@
+$schema:            http://json-schema.org/draft-04/schema#
+title:              "Describe Worker Response"
+description: |
+  Response from a `worker` request.
+type:               object
+properties:
+  workerGroup:
+    title:          "Worker Group Identifier"
+    description:    "Identifier for the worker group the worker belongs to."
+    type:           string
+  workerId:
+    title:          "Worker Identifier"
+    description:    "Identifier for the worker being listed."
+    type:           string
+  tasks:
+    type:           array
+    title:          "Tasks claimed by the given worker ID."
+    description:    "Tasks claimed by the given worker ID."
+    items:
+      type:         object
+      title:        "Task information"
+      description:  "Basic Information known about a task claimed by specified worker."
+additionalProperties: false
+required:
+ - workerGroup
+ - workerId
+ - tasks

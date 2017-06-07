@@ -27,7 +27,6 @@ api.declare({
   description: 'List worker IDs sharing the same `workerGroup` ID',
 }, async function(req, res) {
   let workerGroup = req.params.workerGroup;
-  let continuation = req.query.continuationToken || null;
   let limit = parseInt(req.query.limit || 100, 10);
 
   let data = await this.db.query(
@@ -41,5 +40,43 @@ api.declare({
   };
   data.rows.forEach(r => {result.workers.push({workerId: r.worker_id});});
 
+  return res.reply(result);
+});
+
+/** Worker Information **/
+api.declare({
+  name: 'worker',
+  method: 'get',
+  route: '/workers/:workerGroup/:workerId',
+  output: 'describe-worker-response.json#',
+  stability: API.stability.experimental,
+  title: 'Describe Worker',
+  description: 'List details known about a given worker ID',
+}, async function(req, res) {
+  let workerGroup = req.params.workerGroup;
+  let workerId = req.params.workerId;
+  // We should only need to return the last 100 tasks to know meaningful information
+  // about a worker.  Perhaps later we can make this a query param with offset.
+  let taskLimit = 100;
+
+  let data = await this.db.query(
+    'SELECT * from tasks where worker_id = $1 order by started desc limit $2',
+    [workerId, taskLimit]
+  );
+
+  let result = {
+    workerGroup,
+    workerId,
+    tasks: [],
+  };
+  data.rows.forEach(r => {
+    let newTask = {};
+    Object.keys(r).forEach(k => {
+      let v = r[k];
+      let newKey = k.replace(/_([a-z])/g, (g) => {return g[1].toUpperCase();});
+      newTask[newKey] = v;
+    });
+    result.tasks.push(newTask);
+  });
   return res.reply(result);
 });
