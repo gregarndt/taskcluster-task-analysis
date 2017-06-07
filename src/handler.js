@@ -32,7 +32,6 @@ export class Handler {
           `Error caught when processing message. ` +
           `Message: ${JSON.stringify(message, null, 2)} Stack: ${err.stack}`
         );
-        process.exit();
       };
     });
     this.listener.on('error', (error) => {
