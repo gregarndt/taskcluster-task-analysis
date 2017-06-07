@@ -27,8 +27,13 @@ function determineSourceInformation(task) {
 
 function buildGithubSourceInformation(task) {
   let source = task.metadata.source;
-  if (task.payload.env && task.payload.env.GITHUB_BASE_REPO_URL) {
-    source = task.payload.env.GITHUB_BASE_REPO_URL;
+  let revision, pushId;
+  if (task.payload.env) {
+    if (task.payload.env.GITHUB_BASE_REPO_URL) {
+      source = task.payload.env.GITHUB_BASE_REPO_URL;
+      revision = task.payload.env.GITHUB_HEAD_SHA;
+      pushId = task.payload.env.GITHUB_PULL_REQUEST;
+    }
   }
 
   let parsedUrl = parseGithubUrl(source);
@@ -41,8 +46,8 @@ function buildGithubSourceInformation(task) {
     origin: 'github.com',
     owner: parsedUrl.owner,
     project: parsedUrl.name,
-    revision: task.payload.env.GITHUB_HEAD_SHA,
-    pushId: task.payload.env.GITHUB_PULL_REQUEST,
+    revision,
+    pushId,
   };
 }
 
