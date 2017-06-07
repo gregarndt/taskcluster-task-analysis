@@ -7,7 +7,7 @@ defaults:
     queueName:  'taskcluster-task-analysis'
   postgresql: !env DATABASE_URL
   server:
-    publicUrl: 'https://taskcluster-task-analysis.herokuapp.com'
+    publicUrl: !env APPLICATION_URL
     port: !env:number PORT
     forceSSL: false
 trustProxy: false
@@ -15,7 +15,7 @@ production:
   monitor:
     component: 'task-analysis'
   server:
-    publicUrl: 'https://taskcluster-task-analysis.herokuapp.com'
+    publicUrl: !env APPLICATION_URL
     port: !env:number PORT
     forceSSL: true
     env: 'development'
