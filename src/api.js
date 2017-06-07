@@ -57,7 +57,7 @@ api.declare({
   let workerId = req.params.workerId;
   // We should only need to return the last 100 tasks to know meaningful information
   // about a worker.  Perhaps later we can make this a query param with offset.
-  let taskLimit = 100;
+  let taskLimit = 20;
 
   let data = await this.db.query(
     'SELECT * from tasks where worker_id = $1 order by started desc limit $2',
@@ -95,7 +95,7 @@ api.declare({
   let workerId = req.params.workerId;
   // We should only need to return the last 100 tasks to know meaningful information
   // about a worker.  Perhaps later we can make this a query param with offset.
-  let taskLimit = 100;
+  let taskLimit = 20;
 
   let data = await this.db.query(
     'SELECT * from tasks where worker_id = $1 order by started desc limit $2',
