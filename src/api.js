@@ -17,7 +17,7 @@ module.exports = api;
 api.declare({
   name:   'listWorkerGroup',
   method: 'get',
-  route:  '/workerGroups/:workerGroup/workers',
+  route:  '/worker-groups/:workerGroup/workers',
   query: {
     limit: /^[0-9]+$/,
   },
@@ -47,7 +47,7 @@ api.declare({
 api.declare({
   name: 'worker',
   method: 'get',
-  route: '/workerGroups/:workerGroup/workers/:workerId',
+  route: '/worker-groups/:workerGroup/workers/:workerId',
   output: 'describe-worker-response.json#',
   stability: API.stability.experimental,
   title: 'Describe Worker',
