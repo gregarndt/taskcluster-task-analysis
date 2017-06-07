@@ -1,0 +1,29 @@
+$schema:            http://json-schema.org/draft-04/schema#
+title:              "List Worker Group Response"
+description: |
+  Response from a `listWorkerGroup` request.
+type:               object
+properties:
+  workerGroup:
+    title:          "Worker Group Identifier"
+    description:    "Identifier for the worker group being listed."
+    type:           string
+  workers:
+    type:           array
+    title:          "Workers from the worker group"
+    description:    "List of workers in this worker group."
+    items:
+      type:         object
+      title:        "Worker Information"
+      description: "Basic Information known about a particular worker"
+      properties:
+        workerId:
+          type: string
+          title: "Worker ID"
+      additionalProperties: false
+      required:
+        - workerId
+additionalProperties: false
+required:
+ - workerGroup
+ - workers

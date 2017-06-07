@@ -1,1 +1,2 @@
-handler: node . server
+web: node . server
+handler: node . eventListener
