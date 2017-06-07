@@ -21,6 +21,7 @@ let load = loader({
     requires: ['cfg'],
     setup: ({cfg}) => validator({
       prefix: 'taskcluster-task-analysis/v1/',
+      publish: false,
     }),
   },
 
@@ -52,7 +53,7 @@ let load = loader({
     requires: ['cfg'],
     setup: async ({cfg}) => {
       if (process.env.NODE_ENV === 'production') {
-        debug('Runnign in production, forcing SSL for postgres');
+        debug('Running in production, forcing SSL for postgres');
         pg.defaults.ssl = true;
       }
       let client = new pg.Client(cfg.postgresql);
