@@ -6,15 +6,31 @@ defaults:
     prefetch:   20
     queueName:  'taskcluster-task-analysis'
   postgresql: !env DATABASE_URL
+  server:
+    publicUrl: 'https://taskcluster-task-analysis.herokuapp.com'
+    port: !env:number PORT
+    forceSSL: false
+trustProxy: false
 production:
   monitor:
     component: 'task-analysis'
+  server:
+    publicUrl: 'https://taskcluster-task-analysis.herokuapp.com'
+    port: !env:number PORT
+    forceSSL: true
+    env: 'development'
 staging:
   pulse:
     queueName: taskcluster-task-analysis
   monitor:
     component: 'task-analysis-staging'
 test:
+  server:
+    publicUrl: 'http://localhost:60415'
+    port: 60415
+    env: 'development'
+    trustProxy: false
+    forceSSL: false
   postgresql:
     host: localhost
     port: 5555

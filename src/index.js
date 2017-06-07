@@ -5,6 +5,9 @@ import config from 'typed-env-config';
 import loader from 'taskcluster-lib-loader';
 import taskcluster from 'taskcluster-client';
 import {Handler} from './handler';
+import api from './api';
+import validator from 'taskcluster-lib-validate';
+import App from 'taskcluster-lib-app';
 
 let debug = Debug('taskcluster-analysis:main');
 
@@ -12,6 +15,13 @@ let load = loader({
   cfg: {
     requires: ['profile'],
     setup: ({profile}) => config({profile}),
+  },
+
+  validator: {
+    requires: ['cfg'],
+    setup: ({cfg}) => validator({
+      prefix: 'taskcluster-task-analysis/v1/',
+    }),
   },
 
   listener: {
@@ -51,7 +61,7 @@ let load = loader({
     },
   },
 
-  server: {
+  eventListener: {
     requires: ['cfg', 'listener', 'db'],
     setup: async ({cfg, listener, db}) => {
       let queue = new taskcluster.Queue();
@@ -64,6 +74,28 @@ let load = loader({
       handler.start();
     },
   },
+
+  api: {
+    requires: ['cfg', 'validator', 'db'],
+    setup: ({cfg, validator, db}) => api.setup({
+      context:          {cfg, db},
+      publish:          false,
+      baseUrl:          cfg.server.publicUrl + '/v1',
+      referencePrefix:  '',
+      validator,
+    }),
+  },
+
+  server: {
+    requires: ['cfg', 'api'],
+    setup: ({cfg, api}) => {
+      debug('Launching server.');
+      let app = App(cfg.server);
+      app.use('/v1', api);
+      return app.createServer();
+    },
+  },
+
 }, ['profile', 'process']);
 
 // If this file is executed launch component from first argument
