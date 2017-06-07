@@ -10,6 +10,7 @@ defaults:
     publicUrl: !env APPLICATION_URL
     port: !env:number PORT
     forceSSL: false
+    trustProxy: false
 trustProxy: false
 production:
   monitor:
@@ -19,6 +20,7 @@ production:
     port: !env:number PORT
     forceSSL: true
     env: 'production'
+    trustProxy: true
 staging:
   pulse:
     queueName: taskcluster-task-analysis
