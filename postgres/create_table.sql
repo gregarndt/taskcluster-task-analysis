@@ -3,7 +3,6 @@ CREATE TABLE tasks (
     task_id varchar(22) NOT NULL,
     run_id int NOT NULL,
     state text NOT NULL,
-    resolution text,
     exception_reason text,
     created timestamp NOT NULL,
     scheduled timestamp,
