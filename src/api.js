@@ -60,8 +60,8 @@ api.declare({
   let taskLimit = 20;
 
   let data = await this.db.query(
-    'SELECT * from tasks where worker_id = $1 order by started desc limit $2',
-    [workerId, taskLimit]
+    'SELECT * from tasks where worker_id = $1 and worker_group = $2 order by started desc limit $3',
+    [workerId, workerGroup, taskLimit]
   );
 
   let result = {
@@ -98,8 +98,8 @@ api.declare({
   let taskLimit = 20;
 
   let data = await this.db.query(
-    'SELECT * from tasks where worker_id = $1 order by started desc limit $2',
-    [workerId, taskLimit]
+    'SELECT * from tasks where worker_id = $1 and worker_group = $2 order by started desc limit $3',
+    [workerId, workerGroup, taskLimit]
   );
 
   let result = {
