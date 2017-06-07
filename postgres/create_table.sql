@@ -19,6 +19,7 @@ CREATE TABLE tasks (
     provisioner text,
     worker_id text,
     worker_type text,
+    worker_group text,
     platform text,
     job_kind text,
     CONSTRAINT dup_task_run UNIQUE (task_id, run_id)

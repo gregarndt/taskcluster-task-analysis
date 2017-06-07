@@ -32,6 +32,7 @@ export class Handler {
           `Error caught when processing message. ` +
           `Message: ${JSON.stringify(message, null, 2)} Stack: ${err.stack}`
         );
+        process.exit();
       };
     });
     this.listener.on('error', (error) => {
@@ -136,10 +137,10 @@ export class Handler {
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
       ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind,' +
-      ' worker_id, started, resolved, exception_reason, duration)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)' +
+      ' worker_id, worker_group, started, resolved, exception_reason, duration)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
-      ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
+      ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, worker_group=EXCLUDED.worker_group,' +
       ' scheduled=EXCLUDED.scheduled, started=EXCLUDED.started, ' +
       ' resolved=EXCLUDED.resolved, exception_reason=EXCLUDED.exception_reason, ' +
       ' duration=EXCLUDED.duration',
@@ -160,6 +161,7 @@ export class Handler {
         task.platform,
         task.jobKind,
         currentRun.workerId,
+        currentRun.workerGroup,
         currentRun.started,
         currentRun.resolved,
         currentRun.reasonResolved,
@@ -174,10 +176,11 @@ export class Handler {
     await this.db.query(
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project, ' +
-      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind, worker_id, started)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)' +
+      ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind, worker_id, worker_group, started)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
-      ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, started=EXCLUDED.started, worker_id=EXCLUDED.worker_id',
+      ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, started=EXCLUDED.started,' +
+      ' worker_id=EXCLUDED.worker_id, worker_group=EXCLUDED.worker_group',
       [
         task.taskId,
         task.runId,
@@ -195,6 +198,7 @@ export class Handler {
         task.platform,
         task.jobKind,
         task.currentRun.workerId,
+        task.currentRun.workerGroup,
         task.currentRun.started,
       ]
     );
@@ -207,12 +211,12 @@ export class Handler {
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
       ' revision, push_id, scheduler, provisioner, worker_type, platform,' +
-      ' job_kind, worker_id, started, resolved, duration)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)' +
+      ' job_kind, worker_id, worker_group, started, resolved, duration)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
       ' SET scheduled=EXCLUDED.scheduled, state=EXCLUDED.state, ' +
-      ' worker_id=EXCLUDED.worker_id, started=EXCLUDED.started, resolved=EXCLUDED.resolved, ' +
-      ' duration=EXCLUDED.duration',
+      ' worker_id=EXCLUDED.worker_id, worker_group=EXCLUDED.worker_group, started=EXCLUDED.started,' +
+      ' resolved=EXCLUDED.resolved, duration=EXCLUDED.duration',
       [
         task.taskId,
         task.runId,
@@ -230,6 +234,7 @@ export class Handler {
         task.platform,
         task.jobKind,
         task.currentRun.workerId,
+        task.currentRun.workerGroup,
         task.currentRun.started,
         task.currentRun.resolved,
         new Date(task.currentRun.resolved) - new Date(task.currentRun.started),
@@ -249,10 +254,10 @@ export class Handler {
       'INSERT INTO tasks' +
       ' (task_id, run_id, state, created, scheduled, source, owner, project,' +
       ' revision, push_id, scheduler, provisioner, worker_type, platform, job_kind,' +
-      ' worker_id, started, resolved, exception_reason, duration)' +
-      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)' +
+      ' worker_id, worker_group, started, resolved, exception_reason, duration)' +
+      ' VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)' +
       ' ON CONFLICT ON CONSTRAINT dup_task_run DO UPDATE' +
-      ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, ' +
+      ' SET state=EXCLUDED.state, worker_id=EXCLUDED.worker_id, worker_group=EXCLUDED.worker_group,' +
       ' scheduled=EXCLUDED.scheduled, started=EXCLUDED.started, ' +
       ' resolved=EXCLUDED.resolved, exception_reason=EXCLUDED.exception_reason, ' +
       ' duration=EXCLUDED.duration',
@@ -273,6 +278,7 @@ export class Handler {
         task.platform,
         task.jobKind,
         task.currentRun.workerId,
+        task.currentRun.workerGroup,
         task.currentRun.started,
         task.currentRun.resolved,
         task.currentRun.reasonResolved,
