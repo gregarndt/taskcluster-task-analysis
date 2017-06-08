@@ -24,8 +24,7 @@ CREATE TABLE tasks (
     CONSTRAINT dup_task_run UNIQUE (task_id, run_id)
 );
 
-create index tasks_worker_id_idx on tasks (worker_id);
-create index tasks_project_idx on tasks (project);
+create index tasks_worker_id_idx on tasks (worker_id, worker_group) where worker_id is not null and worker_group is not null;
 
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
