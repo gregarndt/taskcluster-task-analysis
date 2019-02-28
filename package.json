@@ -30,8 +30,10 @@
     "test": "neutrino test",
     "postinstall": "yarn build",
     "start": "node . server",
-    "startEventListener": "node . eventListener"
+    "startEventListener": "node . eventListener",
+    "heroku-postbuild": "echo Skip build on Heroku"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "heroku-run-build-script": true
 }
