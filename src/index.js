@@ -1,13 +1,13 @@
-import Debug from 'debug';
-import path from 'path';
-import pg from 'pg';
-import config from 'typed-env-config';
-import loader from 'taskcluster-lib-loader';
-import taskcluster from 'taskcluster-client';
-import {Handler} from './handler';
-import api from './api';
-import validator from 'taskcluster-lib-validate';
-import App from 'taskcluster-lib-app';
+const Debug = require('debug');
+const path = require('path');
+const pg = require('pg');
+const config = require('typed-env-config');
+const loader = require('taskcluster-lib-loader');
+const taskcluster = require('taskcluster-client');
+const {Handler} = require('./handler');
+const api = require('./api');
+const validator = require('taskcluster-lib-validate');
+const App = require('taskcluster-lib-app');
 
 let debug = Debug('taskcluster-analysis:main');
 

@@ -1,7 +1,7 @@
-import Debug from 'debug';
-import taskcluster from 'taskcluster-client';
-import _ from 'lodash';
-import {Task} from './task';
+const Debug = require('debug');
+const taskcluster = require('taskcluster-client');
+const _ = require('lodash');
+const {Task} = require('./task');
 
 let events = new taskcluster.QueueEvents();
 let debug = Debug('task-analysis:handler');
@@ -14,7 +14,7 @@ const EVENT_MAP = {
   [events.taskException().exchange]: 'exception',
 };
 
-export class Handler {
+class Handler {
   constructor(options) {
     this.queue = options.queue;
     this.listener = options.listener;
@@ -287,3 +287,5 @@ export class Handler {
     return;
   }
 }
+
+module.exports = {Handler};
